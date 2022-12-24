@@ -1,0 +1,13 @@
+.solid
+.vercel
+.github
+
+# dependencies
+/node_modules
+
+.env
+
+pnpm-lock.yaml
+
+.eslintrc.cjs
+.prettierrc.cjs
