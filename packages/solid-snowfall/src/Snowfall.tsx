@@ -1,10 +1,11 @@
 import { Accessor, Component, createEffect, createSignal, onCleanup, splitProps } from "solid-js";
 
 import { destructure } from "@solid-primitives/destructure";
+import { createElementSize } from "@solid-primitives/resize-observer";
 
 import { targetFrameTime } from "./config";
 import { createSnowFallStyle } from "./hooks";
-import { createComponentSize, createDeepCompareMemo, createSnowFlakes } from "./hooks";
+import { createDeepCompareMemo, createSnowFlakes } from "./hooks";
 import { defaultConfig, SnowflakeProps } from "./Snowflake";
 
 export interface SnowfallProps extends Partial<SnowflakeProps> {
@@ -50,7 +51,8 @@ const Snowfall: Component<SnowfallProps> = (props) => {
   const [canvasRef, setCanvasRef] = createSignal<HTMLCanvasElement>(null as unknown as HTMLCanvasElement);
   const ctx = () => canvasRef().getContext("2d");
 
-  const canvasSize = createComponentSize(canvasRef);
+  const canvasSize = createElementSize(canvasRef);
+
   let animationFrame = 0;
 
   let lastUpdate = Date.now();
@@ -107,8 +109,8 @@ const Snowfall: Component<SnowfallProps> = (props) => {
   return (
     <canvas
       ref={setCanvasRef}
-      height={canvasSize().height}
-      width={canvasSize().width}
+      height={canvasSize.height!}
+      width={canvasSize.width!}
       style={mergedStyle()}
       data-testid="SnowfallCanvas"
     />
