@@ -1,5 +1,5 @@
 import { Accessor, createEffect, createMemo, createSignal, onCleanup } from "solid-js";
-import { EffectFunction } from "solid-js/types/reactive/signal";
+import { createStore, SetStoreFunction } from "solid-js/store";
 
 import isEqual from "fast-deep-equal";
 
@@ -36,7 +36,7 @@ export const createSnowFlakes = (
   amount: Accessor<number>,
   config: Accessor<SnowflakeConfig>,
 ) => {
-  const [snowflakes, setSnowflakes] = createSignal<Snowflake[]>([]);
+  const [snowflakes, setSnowflakes] = createStore<Snowflake[]>([]);
 
   // Handle change of amount
   createEffect(() => {
@@ -130,8 +130,8 @@ export const createSnowFallStyle = (
  * const prevValue = usePrevious(obj) // <- value from the previous render
  * console.log(obj === prevValue) // <- always logs true until value changes
  */
-export function createDeepCompareMemo<T>(effect: EffectFunction<T | undefined>): Accessor<T> {
-  const result = createMemo(effect, undefined, {
+export function createDeepCompareMemo<T>(value: Accessor<T>): Accessor<T> {
+  const result = createMemo(() => value(), undefined, {
     equals: (a, b) => isEqual(a, b),
   });
 

@@ -47,6 +47,8 @@ const Snowfall: Component<SnowfallProps> = (props) => {
   const mergedStyle = createSnowFallStyle(style);
 
   const [canvasRef, setCanvasRef] = createSignal<HTMLCanvasElement>(null as unknown as HTMLCanvasElement);
+  const ctx = () => canvasRef().getContext("2d");
+
   const canvasSize = useComponentSize(canvasRef);
   let animationFrame = 0;
 
@@ -67,18 +69,16 @@ const Snowfall: Component<SnowfallProps> = (props) => {
   const render = (framesPassed = 1) => {
     if (canvasRef()) {
       // Update the positions of the snowflakes
-      snowflakes().forEach((snowflake) => {
+      snowflakes.forEach((snowflake) => {
         snowflake.update(canvasRef, framesPassed as number);
       });
 
       // Render them if the canvas is available
-      const ctx = canvasRef().getContext("2d");
+      if (ctx()) {
+        ctx()!.setTransform(1, 0, 0, 1, 0, 0);
+        ctx()!.clearRect(0, 0, canvasRef().offsetWidth, canvasRef().offsetHeight);
 
-      if (ctx) {
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.clearRect(0, 0, canvasRef().offsetWidth, canvasRef().offsetHeight);
-
-        snowflakes().forEach((snowflake) => snowflake.draw(ctx));
+        snowflakes.forEach((snowflake) => snowflake.draw(ctx()!));
       }
     }
   };
