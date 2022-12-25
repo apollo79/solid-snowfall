@@ -3,7 +3,8 @@ import { Accessor, Component, createEffect, createSignal, onCleanup, splitProps 
 import { destructure } from "@solid-primitives/destructure";
 
 import { targetFrameTime } from "./config";
-import { createDeepCompareMemo, createSnowFallStyle, createSnowFlakes, useComponentSize } from "./hooks";
+import { createSnowFallStyle } from "./hooks";
+import { createComponentSize, createDeepCompareMemo, createSnowFlakes } from "./hooks";
 import { defaultConfig, SnowflakeProps } from "./Snowflake";
 
 export interface SnowfallProps extends Partial<SnowflakeProps> {
@@ -49,7 +50,7 @@ const Snowfall: Component<SnowfallProps> = (props) => {
   const [canvasRef, setCanvasRef] = createSignal<HTMLCanvasElement>(null as unknown as HTMLCanvasElement);
   const ctx = () => canvasRef().getContext("2d");
 
-  const canvasSize = useComponentSize(canvasRef);
+  const canvasSize = createComponentSize(canvasRef);
   let animationFrame = 0;
 
   let lastUpdate = Date.now();
@@ -70,7 +71,7 @@ const Snowfall: Component<SnowfallProps> = (props) => {
     if (canvasRef()) {
       // Update the positions of the snowflakes
       snowflakes.forEach((snowflake) => {
-        snowflake.update(canvasRef, framesPassed as number);
+        snowflake.update(canvasRef(), framesPassed as number);
       });
 
       // Render them if the canvas is available
@@ -99,8 +100,9 @@ const Snowfall: Component<SnowfallProps> = (props) => {
 
   createEffect(() => {
     loop();
-    onCleanup(() => cancelAnimationFrame(animationFrame));
   });
+
+  onCleanup(() => cancelAnimationFrame(animationFrame));
 
   return (
     <canvas

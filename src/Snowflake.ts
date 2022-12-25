@@ -1,5 +1,3 @@
-import { Accessor } from "solid-js";
-
 import isEqual from "fast-deep-equal";
 
 import { lerp, random, randomElement } from "./utils";
@@ -98,6 +96,8 @@ class Snowflake {
   private framesSinceLastUpdate: number;
   private image?: CanvasImageSource;
 
+  private foo?: number;
+
   public constructor(canvas: HTMLCanvasElement, config: SnowflakeConfig = {}) {
     // Set custom config
     this.updateConfig(config);
@@ -152,14 +152,21 @@ class Snowflake {
     }
   }
 
-  public update(canvas: Accessor<HTMLCanvasElement>, framesPassed = 1): void {
+  public update(canvas: HTMLCanvasElement, framesPassed = 1): void {
     const { x, y, rotation, rotationSpeed, nextRotationSpeed, wind, speed, nextWind, nextSpeed, radius } = this.params;
 
     // Update current location, wrapping around if going off the canvas
-    this.params.x = (x + wind * framesPassed) % (canvas().offsetWidth + radius * 2);
-    if (this.params.x > canvas().offsetWidth + radius) this.params.x = -radius;
-    this.params.y = (y + speed * framesPassed) % (canvas().offsetHeight + radius * 2);
-    if (this.params.y > canvas().offsetHeight + radius) this.params.y = -radius;
+    this.params.x = (x + wind * framesPassed) % (canvas.offsetWidth + radius * 2);
+
+    if (this.params.x > canvas.offsetWidth + radius) {
+      this.params.x = -radius;
+    }
+
+    this.params.y = (y + speed * framesPassed) % (canvas.offsetHeight + radius * 2);
+
+    if (this.params.y > canvas.offsetHeight + radius) {
+      this.params.y = -radius;
+    }
 
     // Apply rotation
     if (this.image) {

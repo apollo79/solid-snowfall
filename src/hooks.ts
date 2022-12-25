@@ -1,4 +1,4 @@
-import { Accessor, createEffect, createMemo, createSignal, onCleanup } from "solid-js";
+import { Accessor, createEffect, createMemo, createSignal, JSX, onCleanup } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 import isEqual from "fast-deep-equal";
@@ -13,7 +13,7 @@ import { getSize } from "./utils";
  * @param amount The number of snowflakes
  * @param config The configuration for each snowflake
  */
-const createSnowflakesArray = (canvasRef: HTMLCanvasElement, amount: number, config: SnowflakeConfig): Snowflake[] => {
+const makeSnowflakesArray = (canvasRef: HTMLCanvasElement, amount: number, config: SnowflakeConfig): Snowflake[] => {
   if (!canvasRef) return [];
 
   const snowflakes: Snowflake[] = [];
@@ -44,7 +44,7 @@ export const createSnowFlakes = (
       const sizeDifference = amount() - snowflakes.length;
 
       if (sizeDifference > 0) {
-        return [...snowflakes, ...createSnowflakesArray(canvasRef(), sizeDifference, config())];
+        return [...snowflakes, ...makeSnowflakesArray(canvasRef(), sizeDifference, config())];
       }
 
       if (sizeDifference < 0) {
@@ -73,14 +73,14 @@ export const createSnowFlakes = (
  * size. Falls back to listening for resize events on the window.
  * @param ref A ref to the HTML element to be measured
  */
-export const useComponentSize = (ref: Accessor<HTMLElement>) => {
+export const createComponentSize = (ref: Accessor<HTMLElement>) => {
   const [size, setSize] = createSignal(getSize(ref()));
 
-  const resizeHandler = createMemo(() => {
+  const resizeHandler = () => {
     if (ref()) {
       setSize(getSize(ref()));
     }
-  });
+  };
 
   createEffect(() => {
     const { ResizeObserver } = window;
@@ -109,7 +109,7 @@ export const useComponentSize = (ref: Accessor<HTMLElement>) => {
  * @param ref A ref to the HTML element to be measured
  */
 export const createSnowFallStyle = (
-  overrides?: Accessor<Record<string, string | number> | undefined>,
+  overrides?: Accessor<JSX.CSSProperties | undefined>,
 ): Accessor<Record<string, string | number>> => {
   const styles = createMemo(() => ({
     ...snowfallBaseStyle,
