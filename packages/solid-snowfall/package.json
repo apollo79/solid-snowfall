@@ -1,0 +1,33 @@
+{
+  "name": "solid-snowfall",
+  "scripts": {
+    "dev": "vite serve dev",
+    "build": "rollup -c rollup.config.ts",
+    "type-check": "tsc --project tsconfig.json --pretty --noEmit",
+    "lint": "prettier --check . && eslint .",
+    "format": "prettier --write .",
+    "format-check": "prettier -- --list-different",
+    "validate": "npm-run-all --parallel type-check lint",
+    "test": "vitest"
+  },
+  "type": "module",
+  "dependencies": {
+    "@solid-primitives/destructure": "^0.1.4",
+    "fast-deep-equal": "^3.1.3"
+  },
+  "devDependencies": {
+    "rollup": "^2.77.2",
+    "rollup-preset-solid": "^1.4.0"
+  },
+  "peerDependencies": {
+    "solid-js": "^1.6.6"
+  },
+  "lint-staged": {
+    "*.+(js|json|ts|tsx)": [
+      "pnpm run format"
+    ],
+    "*.+(js|ts|tsx)": [
+      "pnpm run lint"
+    ]
+  }
+}

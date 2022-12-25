@@ -1,5 +1,5 @@
 import { Accessor, createEffect, createMemo, createSignal, JSX, onCleanup } from "solid-js";
-import { createStore, SetStoreFunction } from "solid-js/store";
+import { createStore } from "solid-js/store";
 
 import isEqual from "fast-deep-equal";
 

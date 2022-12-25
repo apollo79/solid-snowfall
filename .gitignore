@@ -1,10 +1,12 @@
-
-dist
+build/
+dist/
+.next/
 .solid
 .output
 .vercel
 .netlify
 netlify
+.turbo
 
 # dependencies
 /node_modules
