@@ -1,4 +1,4 @@
-import { Accessor, Component, createEffect, createSignal, onCleanup, splitProps } from "solid-js";
+import { Accessor, Component, createEffect, createMemo, createSignal, JSX, onCleanup, splitProps } from "solid-js";
 
 import { destructure } from "@solid-primitives/destructure";
 import { createElementSize } from "@solid-primitives/resize-observer";
@@ -18,7 +18,7 @@ export interface SnowfallProps extends Partial<SnowflakeProps> {
   /**
    * Any style properties that will be passed to the canvas element.
    */
-  style?: Record<string, string | number>;
+  style?: JSX.CSSProperties;
 }
 
 const Snowfall: Component<SnowfallProps> = (props) => {
@@ -49,7 +49,7 @@ const Snowfall: Component<SnowfallProps> = (props) => {
   const mergedStyle = createSnowFallStyle(style);
 
   const [canvasRef, setCanvasRef] = createSignal<HTMLCanvasElement>(null as unknown as HTMLCanvasElement);
-  const ctx = () => canvasRef().getContext("2d");
+  const ctx = createMemo(() => canvasRef()?.getContext("2d"));
 
   const canvasSize = createElementSize(canvasRef);
 
@@ -78,6 +78,7 @@ const Snowfall: Component<SnowfallProps> = (props) => {
 
       // Render them if the canvas is available
       if (ctx()) {
+        // for images
         ctx()!.setTransform(1, 0, 0, 1, 0, 0);
         ctx()!.clearRect(0, 0, canvasRef().offsetWidth, canvasRef().offsetHeight);
 

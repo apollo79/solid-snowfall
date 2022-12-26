@@ -110,10 +110,10 @@ export const createComponentSize = (ref: Accessor<HTMLElement>) => {
  */
 export const createSnowFallStyle = (
   overrides?: Accessor<JSX.CSSProperties | undefined>,
-): Accessor<Record<string, string | number>> => {
+): Accessor<JSX.CSSProperties> => {
   const styles = createMemo(() => ({
     ...snowfallBaseStyle,
-    ...(overrides || {}),
+    ...(overrides?.() || {}),
   }));
 
   return styles;
