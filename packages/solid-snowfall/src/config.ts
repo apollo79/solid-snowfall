@@ -1,4 +1,6 @@
-export const snowfallBaseStyle = {
+import { JSX } from "solid-js";
+
+export const snowfallBaseStyle: JSX.CSSProperties = {
   "pointer-events": "none",
   "background-color": "transparent",
   position: "absolute",
