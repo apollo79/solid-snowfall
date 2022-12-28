@@ -1,5 +1,45 @@
 {
   "name": "solid-snowfall",
+  "description": "A solidjs component that creates a snowfall effect",
+  "keywords": [
+    "solid",
+    "solidjs",
+    "component",
+    "snowfall",
+    "winter",
+    "christmas"
+  ],
+  "license": "MIT",
+  "author": "https://github.com/apollo79",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apollo79/solid-snowfall.git"
+  },
+  "homepage": "https://github.com/apollo79/solid-snowfall#readme",
+  "bugs": {
+    "url": "https://github.com/apollo79/solid-snowfall/issues"
+  },
+  "private": false,
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "solid": "./dist/source/index.jsx",
+      "import": "./dist/esm/index.js",
+      "browser": {
+        "import": "./dist/esm/index.js",
+        "require": "./dist/cjs/index.js"
+      },
+      "require": "./dist/cjs/index.js",
+      "node": "./dist/cjs/index.js"
+    }
+  },
   "scripts": {
     "dev": "vite serve dev",
     "build": "rollup -c rollup.config.ts",

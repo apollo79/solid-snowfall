@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2022 apollo79
+Copyright (c) 2018 Cahil Foley
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,7 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-Large portions of this software are copyright of their respective authors and released
-under the MIT license:
-- react-snowfall, Copyright (c) 2018 Cahil Foley. See https://github.com/apollo79/solid-snowfall/blob/main/LICENSE-react-snowfall

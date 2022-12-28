@@ -109,12 +109,12 @@ const Snowfall: Component<SnowfallProps> = (props) => {
 
   return (
     <canvas
+      {...canvas}
       ref={setCanvasRef}
       height={canvasSize.height!}
       width={canvasSize.width!}
       style={mergedStyle()}
       data-testid="SnowfallCanvas"
-      {...canvas}
     />
   );
 };
