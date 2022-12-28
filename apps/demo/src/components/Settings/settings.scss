@@ -1,0 +1,12 @@
+.settings-container {
+  background-color: rgba(66, 66, 66, 0.7);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05));
+  width           : 100%;
+  max-width       : 400px;
+  padding         : 32px;
+  border-radius   : 8px;
+
+  div {
+    margin-top: 1.5rem;
+  }
+}

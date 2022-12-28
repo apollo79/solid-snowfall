@@ -1,5 +1,6 @@
 {
   "name": "solid-snowfall-monorepo",
+  "private": false,
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",

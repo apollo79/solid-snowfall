@@ -1,0 +1,99 @@
+$w : 20em;
+$h : .7em;
+$d : 2 * $h;
+$r : 0.5 * $d;
+$uw: $w - $d;
+
+@mixin track() {
+    background: none;
+    /* get rid of Firefox track background */
+}
+
+@mixin thumb() {
+    border           : none;
+    /* get rid of Firefox thumb border */
+    width            : #{$d};
+    height           : #{$d};
+    background       : var(--theme-color);
+    border-radius    : 50%;
+    pointer-events   : auto;
+    // opacity       : 0.6;
+    cursor           : pointer;
+}
+
+.multi-slider-wrap {
+    --dif        : calc(var(--max) - var(--min));
+    width        : $w;
+    display      : grid;
+    grid-template: 100% / 1fr 1fr;
+    align-items  : center;
+    overflow     : visible;
+
+    &::before,
+    &::after {
+        content      : "";
+        grid-column  : 1;
+        grid-row     : 1;
+        height       : calc(0.3 * #{$d});
+        background   : var(--theme-color);
+        border-radius: $r;
+    }
+
+    &::before {
+        margin-left: calc(4px + (var(--multi-input-1) - var(--min)) / var(--dif) * #{$uw});
+        width      : calc((var(--multi-input-2) - var(--multi-input-1)) / var(--dif) * #{$uw} + #{$d} - 4px);
+    }
+
+    &::after {
+        margin-left: calc(4px + (var(--multi-input-2) - var(--min)) / var(--dif) * #{$uw});
+        width      : calc((var(--multi-input-1) - var(--multi-input-2)) / var(--dif) * #{$uw} + #{$d} - 4px);
+    }
+
+    input[type="range"] {
+        grid-column       : 1 / span 2;
+        grid-row          : 1;
+        -webkit-appearance: none;
+        width             : 100%;
+        height            : calc(0.2 * #{$d});
+        border-radius     : $r;
+        background        : none;
+        outline           : none;
+
+        &::-webkit-slider-thumb,
+        &::-webkit-slider-runnable-track {
+            -webkit-appearance: none;
+            appearance        : none;
+        }
+
+        &::-webkit-slider-runnable-track {
+            @include track;
+        }
+
+        &::-moz-range-track {
+            @include track;
+        }
+
+        &::-webkit-slider-thumb {
+            @include thumb;
+        }
+
+        &::-moz-range-thumb {
+            @include thumb;
+        }
+
+        &:nth-of-type(2) {
+            background: var(--theme-color-lighter);
+        }
+
+        &:hover,
+        &:focus {
+            &::-moz-range-thumb {
+                box-shadow: 0px 0px 0px 8px var(--theme-color-lightest);
+            }
+
+            &::-webkit-slider-thumb {
+                box-shadow: 0px 0px 0px 8px var(--theme-color-lightest);
+            }
+        }
+    }
+}

@@ -1,0 +1,85 @@
+$w : 20em;
+$h : .7em;
+$d : 2 * $h;
+$r : 0.5 * $d;
+$uw: $w - $d;
+
+@mixin track() {
+    background: none;
+    /* get rid of Firefox track background */
+}
+
+@mixin thumb() {
+    border           : none;
+    /* get rid of Firefox thumb border */
+    width            : #{$d};
+    height           : #{$d};
+    background       : var(--theme-color);
+    border-radius    : 50%;
+    pointer-events   : auto;
+    // opacity       : 0.6;
+    cursor           : pointer;
+}
+
+.slider-wrap {
+    --dif        : calc(var(--max) - var(--min));
+    width        : $w;
+    display      : grid;
+    grid-template: 100% / 1fr 1fr;
+    align-items  : center;
+    overflow     : visible;
+
+    &::before {
+        content      : "";
+        grid-column  : 1;
+        grid-row     : 1;
+        height       : calc(0.3 * #{$d});
+        background   : var(--theme-color);
+        border-radius: $r;
+        width        : calc(#{$d} + (var(--slider-input) - var(--min)) / var(--dif) * #{$uw});
+    }
+
+    input[type=range] {
+        grid-column       : 1 / span 2;
+        grid-row          : 1;
+        -webkit-appearance: none;
+        width             : 100%;
+        height            : calc(0.2 * #{$d});
+        border-radius     : $r;
+        background        : var(--theme-color-lighter);
+        outline           : none;
+
+        &::-webkit-slider-thumb,
+        &::-webkit-slider-runnable-track {
+            -webkit-appearance: none;
+            appearance        : none;
+        }
+
+        &::-webkit-slider-runnable-track {
+            @include track;
+        }
+
+        &::-moz-range-track {
+            @include track;
+        }
+
+        &::-webkit-slider-thumb {
+            @include thumb;
+        }
+
+        &::-moz-range-thumb {
+            @include thumb;
+        }
+
+        &:hover,
+        &:focus {
+            &::-moz-range-thumb {
+                box-shadow: 0px 0px 0px 8px var(--theme-color-lightest);
+            }
+
+            &::-webkit-slider-thumb {
+                box-shadow: 0px 0px 0px 8px var(--theme-color-lightest);
+            }
+        }
+    }
+}
