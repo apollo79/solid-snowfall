@@ -1,4 +1,4 @@
-import { Accessor, Component, createEffect, createMemo, createSignal, JSX, onCleanup, splitProps } from "solid-js";
+import { Accessor, Component, createMemo, createSignal, JSX, onCleanup, onMount, splitProps } from "solid-js";
 
 import { destructure } from "@solid-primitives/destructure";
 import { createElementSize } from "@solid-primitives/resize-observer";
@@ -69,10 +69,11 @@ const Snowfall: Component<SnowfallProps> = (props) => {
 
   const snowflakes = createSnowFlakes(canvasRef, snowflakeCount as Accessor<number>, config);
 
+  // no need for reactivity here
   const render = (framesPassed = 1) => {
     if (canvasRef()) {
       // Update the positions of the snowflakes
-      snowflakes.forEach((snowflake) => {
+      snowflakes().forEach((snowflake) => {
         snowflake.update(canvasRef(), framesPassed as number);
       });
 
@@ -82,7 +83,7 @@ const Snowfall: Component<SnowfallProps> = (props) => {
         ctx()!.setTransform(1, 0, 0, 1, 0, 0);
         ctx()!.clearRect(0, 0, canvasRef().offsetWidth, canvasRef().offsetHeight);
 
-        snowflakes.forEach((snowflake) => snowflake.draw(ctx()!));
+        snowflakes().forEach((snowflake) => snowflake.draw(ctx()!));
       }
     }
   };
@@ -101,7 +102,7 @@ const Snowfall: Component<SnowfallProps> = (props) => {
     animationFrame = requestAnimationFrame(loop);
   };
 
-  createEffect(() => {
+  onMount(() => {
     loop();
   });
 

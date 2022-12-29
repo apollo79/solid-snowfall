@@ -1,5 +1,4 @@
-import { Accessor, createEffect, createMemo, createSignal, JSX, onCleanup } from "solid-js";
-import { createStore } from "solid-js/store";
+import { Accessor, createEffect, createMemo, createSignal, JSX, on, onCleanup } from "solid-js";
 
 import isEqual from "fast-deep-equal";
 
@@ -36,24 +35,26 @@ export const createSnowFlakes = (
   amount: Accessor<number>,
   config: Accessor<SnowflakeConfig>,
 ) => {
-  const [snowflakes, setSnowflakes] = createStore<Snowflake[]>([]);
+  const [snowflakes, setSnowflakes] = createSignal<Snowflake[]>([]);
 
   // Handle change of amount
-  createEffect(() => {
-    setSnowflakes((snowflakes) => {
-      const sizeDifference = amount() - snowflakes.length;
+  createEffect(
+    on(amount, () => {
+      setSnowflakes((snowflakes) => {
+        const sizeDifference = amount() - snowflakes.length;
 
-      if (sizeDifference > 0) {
-        return [...snowflakes, ...makeSnowflakesArray(canvasRef(), sizeDifference, config())];
-      }
+        if (sizeDifference > 0) {
+          return [...snowflakes, ...makeSnowflakesArray(canvasRef(), sizeDifference, config())];
+        }
 
-      if (sizeDifference < 0) {
-        return snowflakes.slice(0, amount());
-      }
+        if (sizeDifference < 0) {
+          return snowflakes.slice(0, amount());
+        }
 
-      return snowflakes;
-    });
-  });
+        return snowflakes;
+      });
+    }),
+  );
 
   // Handle change of config
   createEffect(() => {
