@@ -8,7 +8,7 @@ import { createSnowFallStyle } from "./hooks";
 import { createDeepCompareMemo, createSnowFlakes } from "./hooks";
 import { defaultConfig, SnowflakeProps } from "./Snowflake";
 
-export interface SnowfallProps extends Partial<SnowflakeProps>, JSX.CanvasHTMLAttributes<HTMLCanvasElement> {
+export interface SnowfallProps extends Partial<SnowflakeProps> {
   /**
    * The number of snowflakes to be rendered.
    *
@@ -22,7 +22,7 @@ export interface SnowfallProps extends Partial<SnowflakeProps>, JSX.CanvasHTMLAt
 }
 
 const Snowfall: Component<SnowfallProps> = (props) => {
-  const [split, canvas] = splitProps(props, [
+  const [split] = splitProps(props, [
     "color",
     "changeFrequency",
     "radius",
@@ -110,7 +110,6 @@ const Snowfall: Component<SnowfallProps> = (props) => {
 
   return (
     <canvas
-      {...canvas}
       ref={setCanvasRef}
       height={canvasSize.height!}
       width={canvasSize.width!}
