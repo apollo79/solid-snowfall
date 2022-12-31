@@ -1,10 +1,12 @@
+![Snowfall Demo](./assets/snowfall-demo-banner.gif)
+
 # Solid Snowfall
 
 [![npm](https://img.shields.io/npm/v/solid-snowfall.svg)](https://www.npmjs.com/package/solid-snowfall)
 [![GitHub stars](https://img.shields.io/github/stars/apollo79/solid-snowfall.svg)](https://github.com/apollo79/solid-snowfall/stargazers)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
-A solid component that creates a snowfall effect. It is a port of [react-snowfall](https://github.com/cahilfoley/react-snowfall) by [Cahil Foley](https://github.com/cahilfoley)
+A solid component that creates a snowfall effect
 
 ## Installation
 
@@ -71,7 +73,6 @@ All available properties are detailed below.
 | `speed`           | The minimum and maximum speed of the snowflake (in pixels per frame).<br/><br/>The speed determines how quickly the snowflake moves along the y axis (vertical speed).<br/><br/>The value for each snowflake will be randomly selected within this range.                                | `[1.0, 3.0]`  |
 | `style`           | Any style properties that will be passed to the canvas element.                                                                                                                                                                                                                          | `undefined`   |
 | `wind`            | The minimum and maximum wind of the snowflake (in pixels per frame).<br/><br/>The wind determines how quickly the snowflake moves along the x axis (horizontal speed).<br/><br/>The value for each snowflake will be randomly selected within this range.                                | `[-0.5, 2.0]` |
-| `...canvas properties` | Additional properties you want to set to the canvas that's created for the snowfall effect. For example an `id` | 
 ## Using Images
 
 Instead of rendering colored circles you can instead pass in an array of image elements
