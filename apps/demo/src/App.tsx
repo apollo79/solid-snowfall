@@ -17,7 +17,7 @@ snowflake.src = logo;
 const images = [snowflake];
 
 export function App() {
-  const { color, snowflakeCount, radius, speed, wind, useImages } = destructure(settingsStore);
+  const { color, snowflakeCount, radius, speed, wind, useImages, rotationSpeed } = destructure(settingsStore);
 
   return (
     <div class="app">
@@ -28,6 +28,7 @@ export function App() {
         speed={speed?.()}
         wind={wind?.()}
         images={useImages() ? images : undefined}
+        rotationSpeed={rotationSpeed?.()}
       />
       <a
         class="title"
