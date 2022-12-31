@@ -1,106 +1,159 @@
-import { createSignal, JSX, onCleanup, onMount, splitProps } from "solid-js";
+import { createEffect, createMemo, createSignal, For, JSX, onCleanup, onMount, splitProps } from "solid-js";
+import { createStore } from "solid-js/store";
 
 import { createElementBounds } from "@solid-primitives/bounds";
+import { destructure } from "@solid-primitives/destructure";
+
+import { getNearest, round } from "../../utils";
 
 import "./slider.scss";
 
-interface Handler {
-  (newValue: number): void;
+interface Handler<T extends number | number[]> {
+  (newValue: T): void;
 }
 
-interface SliderProps {
+interface SliderProps<T extends number | number[]> {
   min: number;
   max: number;
   step?: number;
-  value?: number;
-  onChange?: Handler;
-  onchange?: Handler;
-  onInput?: Handler;
-  oninput?: Handler;
+  value?: T;
+  onChange?: Handler<T>;
+  onchange?: Handler<T>;
+  onInput?: Handler<T>;
+  oninput?: Handler<T>;
 }
 
-/**
- * rounds a value to a given step
- * @see https://stackoverflow.com/a/34591063/17797907
- * @example
- * `round(2.74, 0.1)` = 2.7
- * `round(2.74, 0.25)` = 2.75
- * `round(2.74, 0.5)` = 2.5
- * `round(2.74, 1.0)` = 3.0
- */
-function round(value: number, step?: number) {
-  step ||= 1.0;
-  const inv = 1.0 / step;
-  return Math.round(value * inv) / inv;
-}
+export function Slider<T extends number | number[]>(props: SliderProps<T>) {
+  const [eventHandlers] = splitProps(props, ["onchange", "onChange", "oninput", "onInput"]);
 
-export function Slider(props: SliderProps) {
-  const [{ max, min, step = 1 }, eventHandlers] = splitProps(
-    props,
-    ["max", "min", "step"],
-    ["onchange", "onChange", "oninput", "onInput"],
-  );
+  const { max, min, step } = destructure(props);
 
-  const diff = () => max - min;
+  const diff = () => max() - min();
 
-  const defaultValue = () => props.value ?? min;
+  const defaultValue = () => {
+    if (!props.value) {
+      return [min];
+    }
+
+    if (Array.isArray(props.value)) {
+      if (props.value.length == 0) {
+        return [min];
+      }
+
+      return props.value;
+    }
+
+    return [props.value];
+  };
+
+  const [thumbs, setThumbs] = createStore<
+    {
+      value: number;
+      active: boolean;
+    }[]
+  >([]);
+
+  const values = () => thumbs.map((thumb) => thumb.value);
+
+  const smallestValue = () => (values().length == 1 ? 0 : Math.min(...values()));
+
+  const biggestValue = () => Math.max(...values());
+
+  const currentActiveIndex = createMemo(() => thumbs.findIndex((thumb) => thumb.active));
+
+  createEffect(() => {
+    for (let i = 0; i < defaultValue().length; i++) {
+      setThumbs(i, {
+        value: defaultValue()[i],
+      });
+    }
+  });
 
   const [wrapRef, setWrapRef] = createSignal<HTMLSpanElement>();
 
   const wrapBounds = createElementBounds(wrapRef);
 
-  const [value, setValue] = createSignal(defaultValue());
-
-  const calcValueFromPortion = (portion: number, whole: number) => (portion / whole) * diff();
-
   const [pointerDown, setPointerDown] = createSignal(false),
     [dragging, setDragging] = createSignal(false);
+
+  const triggerEventHandlers = () => {
+    Object.values(eventHandlers).forEach((handler) => {
+      handler((values().length == 1 ? values()[0] : values()) as T);
+    });
+  };
+
+  // add min here for negative values. Without this, the value would be positive all the time and not the right one
+  const calcValueFromPortion = (portion: number, whole: number) => (portion / whole) * diff() + min();
 
   const setNewValue = (pageX: number) => {
     const offsetX = pageX - (wrapBounds.left || 0);
 
-    const val = calcValueFromPortion(offsetX, wrapBounds.width ?? 0),
-      rounded = round(val, step);
+    const calculated = calcValueFromPortion(offsetX, wrapBounds.width ?? 0);
 
-    setValue(rounded);
+    let val: number = calculated;
 
-    Object.values(eventHandlers).forEach((handler) => {
-      handler(value());
-    });
+    if (calculated < min()) {
+      val = min();
+    }
+
+    if (calculated > max()) {
+      val = max();
+    }
+
+    const rounded = round(val, step?.());
+
+    // check if a thumb is dragged and therefore active
+    let active = currentActiveIndex();
+
+    // if not (probably a click), get the nearest thumb and use it as active one
+    if (active == -1) {
+      const nearest = getNearest(val, values());
+      active = thumbs.findIndex((thumb) => thumb.value == nearest);
+    }
+
+    setThumbs(active, "value", rounded);
+
+    triggerEventHandlers();
+
+    return active;
   };
 
-  const handleClick: JSX.EventHandlerUnion<HTMLSpanElement, PointerEvent> = (event) => {
+  const handlePointerDown: JSX.EventHandlerUnion<HTMLSpanElement, PointerEvent> = (event) => {
+    const nearestIndex = setNewValue(event.pageX);
+    setThumbs(nearestIndex, "active", true);
+
     setPointerDown(true);
-    setNewValue(event.pageX);
   };
 
   const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
     const { currentTarget } = event;
-    setValue(Number(currentTarget.value));
 
-    Object.values(eventHandlers).forEach((handler) => {
-      handler(value());
-    });
+    setThumbs(Number(currentTarget.dataset.index), "value", Number(currentTarget.value));
+
+    triggerEventHandlers();
   };
 
-  const handleThumbMove: JSX.EventHandlerUnion<HTMLSpanElement, PointerEvent> = (event) => {
+  const handlePointerMove = (event: PointerEvent) => {
     if (pointerDown()) {
-      setNewValue(event.pageX);
       setDragging(true);
+      setNewValue(event.pageX);
     }
   };
 
   const handlePointerUp = () => {
+    setThumbs({}, "active", false);
     setPointerDown(false);
     setDragging(false);
   };
 
   onMount(() => {
     window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointermove", handlePointerMove);
   });
 
   onCleanup(() => {
     window.removeEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointermove", handlePointerMove);
   });
 
   return (
@@ -108,33 +161,39 @@ export function Slider(props: SliderProps) {
       ref={setWrapRef}
       class="slider-wrap"
       classList={{ dragging: dragging() }}
-      style={{ "--value": value(), "--min": min, "--max": max }}
-      onPointerDown={handleClick}
-      onPointerMove={handleThumbMove}
+      // substract min so it is a positive value, relative to the range
+      style={{ "--min": min(), "--max": max(), "--smallest": smallestValue(), "--biggest": biggestValue() }}
+      onPointerDown={handlePointerDown}
     >
       <span class="slider-rail" />
       <span class="slider-track" />
-      <span
-        data-index="0"
-        data-focusvisible="false"
-        class="slider-thumb"
-        classList={{ active: pointerDown() }}
-      >
-        <input
-          data-index="0"
-          aria-label="Default"
-          aria-valuenow={value()}
-          aria-orientation="horizontal"
-          aria-valuemax={max}
-          aria-valuemin={min}
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value()}
-          onInput={handleInput}
-        />
-      </span>
+      <For each={thumbs}>
+        {(thumb, index) => (
+          <span
+            data-index={index()}
+            data-focusvisible="false"
+            class="slider-thumb"
+            classList={{ active: thumb.active }}
+            // substract min so it is a positive value, relative to the range
+            style={{ "--value": thumb.value }}
+          >
+            <input
+              data-index={index()}
+              aria-label="Default"
+              aria-valuenow={thumb.value}
+              aria-orientation="horizontal"
+              aria-valuemax={max()}
+              aria-valuemin={min()}
+              type="range"
+              min={min()}
+              max={max()}
+              step={step?.()}
+              value={thumb.value}
+              onInput={handleInput}
+            />
+          </span>
+        )}
+      </For>
     </span>
   );
 }

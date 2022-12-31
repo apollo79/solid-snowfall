@@ -1,7 +1,7 @@
 import { Show } from "solid-js";
 
 import { setSettingsStore, settingsStore, setUseImages } from "../../settings";
-import { RangeSlider } from "../RangeSlider/RangeSlider";
+import { Checkbox } from "../Checkbox/Checkbox";
 import { Slider } from "../Slider/Slider";
 import { ValueChip } from "../ValueChip/ValueChip";
 
@@ -45,64 +45,61 @@ const Settings = () => {
       </div>
       <div>
         <label>
-          Speed <ValueChip label={`Min ${settingsStore?.speed?.[0]}`} />
-          <ValueChip label={`Max ${settingsStore?.speed?.[1]}`} />
+          Speed <ValueChip label={`Min ${Math.min(...(settingsStore?.speed || []))}`} />
+          <ValueChip label={`Max ${Math.max(...(settingsStore?.speed || []))}`} />
         </label>
-        <RangeSlider
+        <Slider
           value={settingsStore.speed}
           min={0}
           max={10}
           step={0.5}
-          onChange={(_, value) => setSettingsStore("speed", value)}
+          onChange={(value) => setSettingsStore("speed", value)}
         />
       </div>
       <div>
         <label>
-          Wind <ValueChip label={`Min ${settingsStore?.wind?.[0]}`} />{" "}
-          <ValueChip label={`Max ${settingsStore?.wind?.[1]}`} />
+          Wind <ValueChip label={`Min ${Math.min(...(settingsStore?.wind || []))}`} />{" "}
+          <ValueChip label={`Max ${Math.max(...(settingsStore?.wind || []))}`} />
         </label>
-        <RangeSlider
+        <Slider
           value={settingsStore.wind}
           min={-1}
           max={10}
           step={0.5}
-          onChange={(_, value) => setSettingsStore("wind", value)}
+          onChange={(value) => setSettingsStore("wind", value)}
         />
       </div>
       <div>
         <label>
-          Radius <ValueChip label={`Min ${settingsStore?.radius?.[0]}`} />
-          <ValueChip label={`Max ${settingsStore?.radius?.[1]}`} />
+          Radius <ValueChip label={`Min ${Math.min(...(settingsStore?.radius || []))}`} />
+          <ValueChip label={`Max ${Math.max(...(settingsStore?.radius || []))}`} />
         </label>
-        <RangeSlider
+        <Slider
           value={settingsStore.radius}
           min={0.5}
           max={30}
           step={0.5}
-          onChange={(_, value) => setSettingsStore("radius", value)}
+          onChange={(value) => setSettingsStore("radius", value)}
         />
       </div>
       <div>
-        <input
-          id="use-images"
-          type="checkbox"
-          checked={settingsStore.useImages}
-          onChange={(event) => setUseImages(event.currentTarget.checked)}
-        />
-        <label for="use-images">Use Images</label>
+        <label>
+          <Checkbox onChange={(checked) => setUseImages(checked)} />
+          Use Images
+        </label>
       </div>
       <Show when={settingsStore.useImages}>
         <div>
           <label>
-            Rotation Speed <ValueChip label={`Min ${settingsStore?.rotationSpeed?.[0]}`} />
-            <ValueChip label={`Max ${settingsStore?.rotationSpeed?.[1]}`} />
+            Rotation Speed <ValueChip label={`Min ${Math.min(...(settingsStore?.rotationSpeed || []))}`} />
+            <ValueChip label={`Max ${Math.max(...(settingsStore?.rotationSpeed || []))}`} />
           </label>
-          <RangeSlider
+          <Slider
             value={settingsStore.rotationSpeed}
             min={-5}
             max={10}
             step={0.5}
-            onChange={(_, value) => setSettingsStore("rotationSpeed", value)}
+            onChange={(value) => setSettingsStore("rotationSpeed", value)}
           />
         </div>
       </Show>
