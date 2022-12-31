@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For, JSX, onCleanup, onMount, splitProps } from "solid-js";
+import { batch, createEffect, createMemo, createSignal, For, JSX, onCleanup, onMount, splitProps } from "solid-js";
 import { createStore } from "solid-js/store";
 
 import { createElementBounds } from "@solid-primitives/bounds";
@@ -86,9 +86,8 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
   const calcValueFromPortion = (portion: number, whole: number) => (portion / whole) * diff() + min();
 
   const setNewValue = (pageX: number) => {
-    const offsetX = pageX - (wrapBounds.left || 0);
-
-    const calculated = calcValueFromPortion(offsetX, wrapBounds.width ?? 0);
+    const offsetX = pageX - (wrapBounds.left || 0),
+      calculated = calcValueFromPortion(offsetX, wrapBounds.width ?? 0);
 
     let val: number = calculated;
 
@@ -119,8 +118,10 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
   };
 
   const handlePointerDown: JSX.EventHandlerUnion<HTMLSpanElement, PointerEvent> = (event) => {
-    const nearestIndex = setNewValue(event.pageX);
-    setThumbs(nearestIndex, "active", true);
+    batch(() => {
+      const nearestIndex = setNewValue(event.pageX);
+      setThumbs(nearestIndex, "active", true);
+    });
 
     setPointerDown(true);
   };

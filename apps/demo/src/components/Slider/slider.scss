@@ -1,33 +1,19 @@
-@mixin track() {
-    background: none;
-    /* get rid of Firefox track background */
-}
-
-@mixin thumb() {
-    border           : none;
-    /* get rid of Firefox thumb border */
-    width            : #{$d};
-    height           : #{$d};
-    background       : var(--theme-color);
-    border-radius    : 50%;
-    pointer-events   : auto;
-    // opacity       : 0.6;
-    cursor           : pointer;
-}
+$thumb-d: 1.3em;
+$rail-h : .2em;
 
 .slider-wrap {
     --dif: calc(var(--max) - var(--min));
 
-    border-radius: 12px;
+    border-radius: .8em;
     box-sizing   : content-box;
     display      : inline-block;
     position     : relative;
     cursor       : pointer;
     touch-action : none;
     color        : var(--theme-color);
-    height       : 4px;
+    height       : $rail-h;
     width        : 100%;
-    padding      : 13px 0px;
+    padding      : .8em 0px;
 
     .slider-rail {
         display         : block;
@@ -69,8 +55,8 @@
 
     .slider-thumb {
         position        : absolute;
-        width           : 20px;
-        height          : 20px;
+        width           : $thumb-d;
+        height          : $thumb-d;
         box-sizing      : border-box;
         border-radius   : 50%;
         outline         : 0px;
