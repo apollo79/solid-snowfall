@@ -21,7 +21,7 @@ export interface SnowfallProps extends Partial<SnowflakeProps> {
   style?: JSX.CSSProperties;
 }
 
-const Snowfall: Component<SnowfallProps> = (props) => {
+export const Snowfall: Component<SnowfallProps> = (props) => {
   const [split] = splitProps(props, [
     "color",
     "changeFrequency",

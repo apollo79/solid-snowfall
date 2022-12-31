@@ -1,7 +1,7 @@
 {
   "name": "solid-snowfall",
   "description": "A solidjs component that creates a snowfall effect",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "keywords": [
     "solid",
     "solidjs",

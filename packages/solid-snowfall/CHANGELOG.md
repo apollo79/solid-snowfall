@@ -1,5 +1,11 @@
 # solid-snowfall
 
+## 0.3.0
+
+### Minor Changes
+
+- remove ability to pass canvas properties and add `Snowfall` as named export
+
 ## 0.2.0
 
 ### Minor Changes
