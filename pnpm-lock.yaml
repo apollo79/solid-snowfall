@@ -62,11 +62,13 @@ importers:
 
   apps/demo:
     specifiers:
+      '@solid-primitives/bounds': ^0.0.105
       '@solid-primitives/destructure': ^0.1.4
       sass: ^1.57.1
       solid-js: ^1.6.6
-      solid-snowfall: workspace:^0.1.0
+      solid-snowfall: workspace:^0.2.0
     dependencies:
+      '@solid-primitives/bounds': 0.0.105_solid-js@1.6.6
       '@solid-primitives/destructure': 0.1.4_solid-js@1.6.6
       solid-js: 1.6.6
       solid-snowfall: link:../../packages/solid-snowfall
@@ -1883,6 +1885,17 @@ packages:
   /@sinclair/typebox/0.24.51:
     resolution: {integrity: sha512-1P1OROm/rdubP5aFDSZQILU0vrLCJ4fvHt6EoqHEM+2D/G5MK3bIaymUKLit8Js9gbns5UyJnkP/TZROLw4tUA==}
     dev: true
+
+  /@solid-primitives/bounds/0.0.105_solid-js@1.6.6:
+    resolution: {integrity: sha512-a2ZRuZayXV1/kSKx8cEOR5pIs2zKAF9lS3Gj/r7uHmBQBmn25GYCYOwj4LbLQbqqbumZr2eJO+/wDyi4UOX5pw==}
+    peerDependencies:
+      solid-js: ^1.6.0
+    dependencies:
+      '@solid-primitives/event-listener': 2.2.4_solid-js@1.6.6
+      '@solid-primitives/resize-observer': 2.0.7_solid-js@1.6.6
+      '@solid-primitives/utils': 4.0.0_solid-js@1.6.6
+      solid-js: 1.6.6
+    dev: false
 
   /@solid-primitives/destructure/0.1.4_solid-js@1.6.6:
     resolution: {integrity: sha512-PQYyz2tKWauWqe6HRqAe1p7VkZ518EcFkCcDDRgWoCTLYmtDXAbSH2QjB7FIDVj5AAxs4DbmjjmJ2Y4N9Gf+mw==}

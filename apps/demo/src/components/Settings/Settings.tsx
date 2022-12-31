@@ -40,7 +40,7 @@ const Settings = () => {
           min={0}
           max={750}
           step={1}
-          onChange={(_, value) => setSettingsStore("snowflakeCount", value)}
+          onChange={(value) => setSettingsStore("snowflakeCount", value)}
         />
       </div>
       <div>
