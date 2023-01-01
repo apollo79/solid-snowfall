@@ -18,19 +18,16 @@ interface SliderProps<T extends number | number[]> {
   step?: number;
   value?: T;
   onChange?: Handler<T>;
-  onchange?: Handler<T>;
-  onInput?: Handler<T>;
-  oninput?: Handler<T>;
 }
 
 export function Slider<T extends number | number[]>(props: SliderProps<T>) {
-  const [eventHandlers] = splitProps(props, ["onchange", "onChange", "oninput", "onInput"]);
-
   const { max, min, step } = destructure(props);
 
-  const diff = () => max() - min();
+  const diff = createMemo(() => max() - min());
 
-  const defaultValue = () => {
+  const defaultValue = createMemo(() => {
+    console.log(props.value);
+
     if (!props.value) {
       return [min];
     }
@@ -44,7 +41,7 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
     }
 
     return [props.value];
-  };
+  });
 
   const [thumbs, setThumbs] = createStore<
     {
@@ -53,11 +50,12 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
     }[]
   >([]);
 
-  const values = () => thumbs.map((thumb) => thumb.value);
+  const values = createMemo(() => thumbs.map((thumb) => thumb.value));
 
-  const smallestValue = () => (values().length == 1 ? 0 : Math.min(...values()));
+  // if only one thumb, then 0 -> the rail starts at the beginning
+  const smallestValue = createMemo(() => (values().length == 1 ? 0 : Math.min(...values())));
 
-  const biggestValue = () => Math.max(...values());
+  const biggestValue = createMemo(() => Math.max(...values()));
 
   const currentActiveIndex = createMemo(() => thumbs.findIndex((thumb) => thumb.active));
 
@@ -76,16 +74,14 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
   const [pointerDown, setPointerDown] = createSignal(false),
     [dragging, setDragging] = createSignal(false);
 
-  const triggerEventHandlers = () => {
-    Object.values(eventHandlers).forEach((handler) => {
-      handler((values().length == 1 ? values()[0] : values()) as T);
-    });
+  const triggerOnChange = () => {
+    props.onChange?.((values().length == 1 ? values()[0] : values()) as T);
   };
 
   // add min here for negative values. Without this, the value would be positive all the time and not the right one
   const calcValueFromPortion = (portion: number, whole: number) => (portion / whole) * diff() + min();
 
-  const setNewValue = (pageX: number) => {
+  const setNewValueFromPageX = (pageX: number) => {
     const offsetX = pageX - (wrapBounds.left || 0),
       calculated = calcValueFromPortion(offsetX, wrapBounds.width ?? 0);
 
@@ -112,15 +108,15 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
 
     setThumbs(active, "value", rounded);
 
-    triggerEventHandlers();
+    triggerOnChange();
 
     return active;
   };
 
   const handlePointerDown: JSX.EventHandlerUnion<HTMLSpanElement, PointerEvent> = (event) => {
     batch(() => {
-      const nearestIndex = setNewValue(event.pageX);
-      setThumbs(nearestIndex, "active", true);
+      const active = setNewValueFromPageX(event.pageX);
+      setThumbs(active, "active", true);
     });
 
     setPointerDown(true);
@@ -131,13 +127,13 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
 
     setThumbs(Number(currentTarget.dataset.index), "value", Number(currentTarget.value));
 
-    triggerEventHandlers();
+    triggerOnChange();
   };
 
   const handlePointerMove = (event: PointerEvent) => {
     if (pointerDown()) {
       setDragging(true);
-      setNewValue(event.pageX);
+      setNewValueFromPageX(event.pageX);
     }
   };
 
