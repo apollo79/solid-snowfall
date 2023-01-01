@@ -24,8 +24,6 @@ export function ColorPicker(props: ColorPickerProps) {
 
     setSelected(currentTarget.value);
 
-    console.log(selected());
-
     triggerOnChange();
   };
 
