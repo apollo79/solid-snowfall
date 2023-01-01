@@ -8,6 +8,9 @@
 
 A solid component that creates a snowfall effect
 
+- [Live Example](https://apollo79.github.io/solid-snowfall)
+- [Demo Playground](https://codesandbox.io/s/github/apollo79/solid-snowfall/tree/main/apps/demo)
+
 ## Installation
 
 With npm
