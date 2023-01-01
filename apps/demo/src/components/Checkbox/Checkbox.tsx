@@ -1,36 +1,26 @@
-import { createSignal, JSX, Show, splitProps } from "solid-js";
+import { createEffect, createSignal, JSX, Show } from "solid-js";
 
 import "./checkbox.scss";
-interface Handler {
-  (checked: boolean): void;
-}
 
 interface CheckboxProps {
   checked?: boolean;
-  onChange?: Handler;
-  onchange?: Handler;
-  onInput?: Handler;
-  oninput?: Handler;
+  onChange?: (checked: boolean) => void;
 }
 
 export function Checkbox(props: CheckboxProps) {
-  const [{ checked: defaultChecked = false }, eventHandlers] = splitProps(
-    props,
-    ["checked"],
-    ["onchange", "onChange", "oninput", "onInput"],
-  );
+  const [checked, setChecked] = createSignal(false);
 
-  const [checked, setChecked] = createSignal(defaultChecked);
+  createEffect(() => {
+    setChecked(props.checked ?? false);
+  });
 
-  const triggerEventHandlers = () => {
-    Object.values(eventHandlers).forEach((handler) => {
-      handler(checked());
-    });
+  const triggerOnChange = () => {
+    props.onChange?.(checked());
   };
 
-  const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
+  const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (event) => {
     setChecked(event.currentTarget.checked);
-    triggerEventHandlers();
+    triggerOnChange();
   };
 
   return (
@@ -41,7 +31,7 @@ export function Checkbox(props: CheckboxProps) {
       <input
         type="checkbox"
         checked={checked()}
-        onInput={handleInput}
+        onChange={handleChange}
       />
       <Show
         when={checked()}

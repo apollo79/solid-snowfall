@@ -1,8 +1,6 @@
 .checkbox-wrap {
     display         : inline-flex;
-    -moz-box-align  : center;
     align-items     : center;
-    -moz-box-pack   : center;
     justify-content : center;
     position        : relative;
     box-sizing      : border-box;
@@ -25,6 +23,10 @@
 
     &:hover {
         background-color: rgba(144, 202, 249, 0.08);
+    }
+
+    &:focus-within {
+        background-color: rgba(212, 212, 212, 0.253);
     }
 
     input[type=checkbox] {

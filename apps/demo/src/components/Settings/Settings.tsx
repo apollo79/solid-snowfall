@@ -2,6 +2,7 @@ import { Show } from "solid-js";
 
 import { setSettingsStore, settingsStore, setUseImages } from "../../settings";
 import { Checkbox } from "../Checkbox/Checkbox";
+import { ColorPicker } from "../ColorPicker/ColorPicker";
 import { Slider } from "../Slider/Slider";
 import { ValueChip } from "../ValueChip/ValueChip";
 
@@ -103,19 +104,16 @@ const Settings = () => {
           </label>
         </div>
       </Show>
-      {/* <Show when={!settingsStore.useImages}>
-        <Box my={2}>
-          <h2>
-            Color <ValueChip label={settingsStore.color ?? ""} />
-          </h2>
-          <CirclePicker
+      <Show when={!settingsStore.useImages}>
+        <label>
+          Color <ValueChip label={settingsStore.color ?? ""} />
+          <ColorPicker
             colors={colors}
-            width="100%"
             color={settingsStore.color}
-            onChangeComplete={(value) => setSettingsStore("color", value.hex)}
+            onChange={(value) => setSettingsStore("color", value)}
           />
-        </Box>
-      </Show> */}
+        </label>
+      </Show>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { batch, createEffect, createMemo, createSignal, For, JSX, onCleanup, onMount, splitProps } from "solid-js";
+import { batch, createEffect, createMemo, createSignal, For, JSX, onCleanup, onMount, Signal } from "solid-js";
 import { createStore } from "solid-js/store";
 
 import { createElementBounds } from "@solid-primitives/bounds";
@@ -8,16 +8,12 @@ import { getNearest, round } from "../../utils";
 
 import "./slider.scss";
 
-interface Handler<T extends number | number[]> {
-  (newValue: T): void;
-}
-
 interface SliderProps<T extends number | number[]> {
   min: number;
   max: number;
   step?: number;
   value?: T;
-  onChange?: Handler<T>;
+  onChange?: (newValue: T) => void;
 }
 
 export function Slider<T extends number | number[]>(props: SliderProps<T>) {
@@ -26,8 +22,6 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
   const diff = createMemo(() => max() - min());
 
   const defaultValue = createMemo(() => {
-    console.log(props.value);
-
     if (!props.value) {
       return [min];
     }
@@ -46,6 +40,7 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
   const [thumbs, setThumbs] = createStore<
     {
       value: number;
+      inputRef: Signal<HTMLInputElement | undefined>;
       active: boolean;
     }[]
   >([]);
@@ -63,6 +58,7 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
     for (let i = 0; i < defaultValue().length; i++) {
       setThumbs(i, {
         value: defaultValue()[i],
+        inputRef: createSignal(),
       });
     }
   });
@@ -168,13 +164,13 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
         {(thumb, index) => (
           <span
             data-index={index()}
-            data-focusvisible="false"
             class="slider-thumb"
             classList={{ active: thumb.active }}
             // substract min so it is a positive value, relative to the range
             style={{ "--value": thumb.value }}
           >
             <input
+              ref={thumb.inputRef[1]}
               data-index={index()}
               aria-label="Default"
               aria-valuenow={thumb.value}
