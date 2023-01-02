@@ -15,7 +15,8 @@ $rail-h : .2em;
     width        : 100%;
     padding      : .8em 0px;
 
-    .slider-rail {
+    &::before {
+        content         : "";
         display         : block;
         position        : absolute;
         border-radius   : inherit;
@@ -27,10 +28,11 @@ $rail-h : .2em;
         transform       : translateY(-50%);
     }
 
-    .slider-track {
+    &::after {
         --left : calc((var(--smallest) - var(--min)) / var(--dif) * 100%);
         --width: calc((var(--biggest) - var(--min)) / var(--dif) * 100% - var(--left));
 
+        content         : "";
         display         : block;
         position        : absolute;
         border-radius   : inherit;
@@ -47,7 +49,7 @@ $rail-h : .2em;
     // remove transtion when dragging
     &.dragging {
 
-        .slider-track,
+        &::after,
         .slider-thumb {
             transition: none 0s ease 0s;
         }

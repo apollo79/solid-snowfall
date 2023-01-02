@@ -35,53 +35,55 @@ const Settings = () => {
       <div>
         <label>
           Snowflake Count <ValueChip label={settingsStore.snowflakeCount ?? ""} />
-          <Slider
-            value={settingsStore.snowflakeCount}
-            min={0}
-            max={750}
-            step={1}
-            onChange={(value) => setSettingsStore("snowflakeCount", value)}
-          />
         </label>
+        <Slider
+          value={settingsStore.snowflakeCount}
+          min={0}
+          max={750}
+          step={1}
+          onChange={(value) => setSettingsStore("snowflakeCount", value)}
+        />
       </div>
       <div>
         <label>
           Speed <ValueChip label={`Min ${Math.min(...(settingsStore?.speed || []))}`} />
           <ValueChip label={`Max ${Math.max(...(settingsStore?.speed || []))}`} />
-          <Slider
-            value={settingsStore.speed}
-            min={0}
-            max={10}
-            step={0.5}
-            onChange={(value) => setSettingsStore("speed", value)}
-          />
         </label>
+        <Slider
+          value={settingsStore.speed}
+          min={0}
+          max={10}
+          step={0.5}
+          onChange={(value) => setSettingsStore("speed", value)}
+        />
       </div>
       <div>
         <label>
-          Wind <ValueChip label={`Min ${Math.min(...(settingsStore?.wind || []))}`} />{" "}
+          Wind <ValueChip label={`Min ${Math.min(...(settingsStore?.wind || []))}`} />
           <ValueChip label={`Max ${Math.max(...(settingsStore?.wind || []))}`} />
-          <Slider
-            value={settingsStore.wind}
-            min={-1}
-            max={10}
-            step={0.5}
-            onChange={(value) => setSettingsStore("wind", value)}
-          />
         </label>
+
+        <Slider
+          value={settingsStore.wind}
+          min={-1}
+          max={10}
+          step={0.5}
+          onChange={(value) => setSettingsStore("wind", value)}
+        />
       </div>
       <div>
         <label>
           Radius <ValueChip label={`Min ${Math.min(...(settingsStore?.radius || []))}`} />
           <ValueChip label={`Max ${Math.max(...(settingsStore?.radius || []))}`} />
-          <Slider
-            value={settingsStore.radius}
-            min={0.5}
-            max={30}
-            step={0.5}
-            onChange={(value) => setSettingsStore("radius", value)}
-          />
         </label>
+
+        <Slider
+          value={settingsStore.radius}
+          min={0.5}
+          max={30}
+          step={0.5}
+          onChange={(value) => setSettingsStore("radius", value)}
+        />
       </div>
       <div>
         <label style={{ "margin-left": "-9px" }}>
@@ -94,25 +96,27 @@ const Settings = () => {
           <label style={{}}>
             Rotation Speed <ValueChip label={`Min ${Math.min(...(settingsStore?.rotationSpeed || []))}`} />
             <ValueChip label={`Max ${Math.max(...(settingsStore?.rotationSpeed || []))}`} />
-            <Slider
-              value={settingsStore.rotationSpeed}
-              min={-5}
-              max={10}
-              step={0.5}
-              onChange={(value) => setSettingsStore("rotationSpeed", value)}
-            />
           </label>
+
+          <Slider
+            value={settingsStore.rotationSpeed}
+            min={-5}
+            max={10}
+            step={0.5}
+            onChange={(value) => setSettingsStore("rotationSpeed", value)}
+          />
         </div>
       </Show>
       <Show when={!settingsStore.useImages}>
         <label>
           Color <ValueChip label={settingsStore.color ?? ""} />
-          <ColorPicker
-            colors={colors}
-            color={settingsStore.color}
-            onChange={(value) => setSettingsStore("color", value)}
-          />
         </label>
+
+        <ColorPicker
+          colors={colors}
+          color={settingsStore.color}
+          onChange={(value) => setSettingsStore("color", value)}
+        />
       </Show>
     </div>
   );

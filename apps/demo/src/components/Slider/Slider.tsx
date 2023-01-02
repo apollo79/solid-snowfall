@@ -1,4 +1,4 @@
-import { batch, createEffect, createMemo, createSignal, For, JSX, onCleanup, onMount, Signal } from "solid-js";
+import { batch, createEffect, createMemo, createSignal, For, JSX, onCleanup, onMount } from "solid-js";
 import { createStore } from "solid-js/store";
 
 import { createElementBounds } from "@solid-primitives/bounds";
@@ -40,7 +40,6 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
   const [thumbs, setThumbs] = createStore<
     {
       value: number;
-      inputRef: Signal<HTMLInputElement | undefined>;
       active: boolean;
     }[]
   >([]);
@@ -58,7 +57,6 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
     for (let i = 0; i < defaultValue().length; i++) {
       setThumbs(i, {
         value: defaultValue()[i],
-        inputRef: createSignal(),
       });
     }
   });
@@ -70,9 +68,9 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
   const [pointerDown, setPointerDown] = createSignal(false),
     [dragging, setDragging] = createSignal(false);
 
-  const triggerOnChange = () => {
+  createEffect(() => {
     props.onChange?.((values().length == 1 ? values()[0] : values()) as T);
-  };
+  });
 
   // add min here for negative values. Without this, the value would be positive all the time and not the right one
   const calcValueFromPortion = (portion: number, whole: number) => (portion / whole) * diff() + min();
@@ -104,8 +102,6 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
 
     setThumbs(active, "value", rounded);
 
-    triggerOnChange();
-
     return active;
   };
 
@@ -122,8 +118,6 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
     const { currentTarget } = event;
 
     setThumbs(Number(currentTarget.dataset.index), "value", Number(currentTarget.value));
-
-    triggerOnChange();
   };
 
   const handlePointerMove = (event: PointerEvent) => {
@@ -156,10 +150,10 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
       classList={{ dragging: dragging() }}
       // substract min so it is a positive value, relative to the range
       style={{ "--min": min(), "--max": max(), "--smallest": smallestValue(), "--biggest": biggestValue() }}
+      role="group"
+      aria-label="slider"
       onPointerDown={handlePointerDown}
     >
-      <span class="slider-rail" />
-      <span class="slider-track" />
       <For each={thumbs}>
         {(thumb, index) => (
           <span
@@ -170,7 +164,6 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
             style={{ "--value": thumb.value }}
           >
             <input
-              ref={thumb.inputRef[1]}
               data-index={index()}
               aria-label="Default"
               aria-valuenow={thumb.value}
