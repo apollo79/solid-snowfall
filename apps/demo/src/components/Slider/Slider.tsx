@@ -1,4 +1,4 @@
-import { batch, createEffect, createMemo, createSignal, For, JSX, onCleanup, onMount } from "solid-js";
+import { batch, createEffect, createMemo, createSignal, For, JSX, on, onCleanup, onMount } from "solid-js";
 import { createStore } from "solid-js/store";
 
 import { createElementBounds } from "@solid-primitives/bounds";
@@ -23,12 +23,12 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
 
   const defaultValue = createMemo(() => {
     if (!props.value) {
-      return [min];
+      return [min()];
     }
 
     if (Array.isArray(props.value)) {
       if (props.value.length == 0) {
-        return [min];
+        return [min()];
       }
 
       return props.value;
@@ -53,13 +53,27 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
 
   const currentActiveIndex = createMemo(() => thumbs.findIndex((thumb) => thumb.active));
 
-  createEffect(() => {
-    for (let i = 0; i < defaultValue().length; i++) {
-      setThumbs(i, {
-        value: defaultValue()[i],
-      });
-    }
-  });
+  createEffect(
+    on(defaultValue, (currDefaultValue, prevDefaultValue) => {
+      if (currDefaultValue != values()) {
+        batch(() => {
+          if (prevDefaultValue) {
+            if (currDefaultValue.length < prevDefaultValue.length) {
+              setThumbs((thumbs) => {
+                return thumbs.slice(0, currDefaultValue.length);
+              });
+            }
+          }
+
+          for (let i = 0; i < defaultValue().length; i++) {
+            setThumbs(i, {
+              value: defaultValue()[i],
+            });
+          }
+        });
+      }
+    }),
+  );
 
   const [wrapRef, setWrapRef] = createSignal<HTMLSpanElement>();
 
@@ -100,16 +114,14 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
       active = thumbs.findIndex((thumb) => thumb.value == nearest);
     }
 
-    setThumbs(active, "value", rounded);
-
-    return active;
+    batch(() => {
+      setThumbs(active, "value", rounded);
+      setThumbs(active, "active", true);
+    });
   };
 
   const handlePointerDown: JSX.EventHandlerUnion<HTMLSpanElement, PointerEvent> = (event) => {
-    batch(() => {
-      const active = setNewValueFromPageX(event.pageX);
-      setThumbs(active, "active", true);
-    });
+    setNewValueFromPageX(event.pageX);
 
     setPointerDown(true);
   };
