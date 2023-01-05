@@ -29,3 +29,7 @@ export function getNearest(x: number, arr: number[]) {
 
   return arr[indexArr.indexOf(min)];
 }
+
+export function arrayEquals(array1: unknown[], array2: unknown[]) {
+  return array1.length === array2.length && array1.every((value, index) => value === array2[index]);
+}

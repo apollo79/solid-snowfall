@@ -1,10 +1,21 @@
-import { batch, createEffect, createMemo, createSignal, For, JSX, on, onCleanup, onMount } from "solid-js";
+import {
+  batch,
+  createEffect,
+  createMemo,
+  createRenderEffect,
+  createSignal,
+  For,
+  JSX,
+  on,
+  onCleanup,
+  onMount,
+} from "solid-js";
 import { createStore } from "solid-js/store";
 
 import { createElementBounds } from "@solid-primitives/bounds";
 import { destructure } from "@solid-primitives/destructure";
 
-import { getNearest, round } from "../../utils";
+import { arrayEquals, getNearest, round } from "../../utils";
 
 import "./slider.scss";
 
@@ -53,9 +64,12 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
 
   const currentActiveIndex = createMemo(() => thumbs.findIndex((thumb) => thumb.active));
 
-  createEffect(
+  // render effect, because this has to be done before showing the sliders. With a normal effect, the tracks of the sliders aren't visible immediately
+  createRenderEffect(
     on(defaultValue, (currDefaultValue, prevDefaultValue) => {
-      if (currDefaultValue != values()) {
+      /* only update if there are new values. This is a optimization for a value that is set to a reactive value 
+         and the same value updated every time the slider value(s) changes, like in ../Settings/Settings.tsx */
+      if (!arrayEquals(currDefaultValue, values())) {
         batch(() => {
           if (prevDefaultValue) {
             if (currDefaultValue.length < prevDefaultValue.length) {
@@ -169,6 +183,7 @@ export function Slider<T extends number | number[]>(props: SliderProps<T>) {
       <For each={thumbs}>
         {(thumb, index) => (
           <span
+            role="slider"
             data-index={index()}
             class="slider-thumb"
             classList={{ active: thumb.active }}
