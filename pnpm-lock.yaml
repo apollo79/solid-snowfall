@@ -75,7 +75,7 @@ importers:
         specifier: ^1.8.7
         version: 1.8.7
       solid-snowfall:
-        specifier: workspace:^0.3.0
+        specifier: workspace:^0.0.0-20231210122600
         version: link:../../packages/solid-snowfall
     devDependencies:
       gh-pages:

@@ -1,7 +1,7 @@
 {
   "name": "solid-snowfall",
   "description": "A solidjs component that creates a snowfall effect",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "keywords": [
     "solid",
     "solidjs",
@@ -43,7 +43,7 @@
   },
   "scripts": {
     "dev": "vite serve dev",
-    "build": "rollup -c rollup.config.ts",
+    "build": "rollup -c rollup.config.js",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",

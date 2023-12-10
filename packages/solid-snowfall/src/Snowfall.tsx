@@ -46,21 +46,19 @@ export const Snowfall: Component<SnowfallProps> = (props) => {
 
   // no need for reactivity here
   const render = (framesPassed = 1) => {
-    if (canvasRef()) {
-      // Update the positions of the snowflakes
-      snowflakes().forEach((snowflake) => {
-        snowflake.update(canvasRef(), framesPassed as number);
-      });
+    // Update the positions of the snowflakes
+    snowflakes().forEach((snowflake) => {
+      snowflake.update(canvasRef(), framesPassed as number);
+    });
 
-      // Render them if the canvas is available
-      if (ctx()) {
-        // for images
-        ctx()!.setTransform(1, 0, 0, 1, 0, 0);
-        ctx()!.clearRect(0, 0, canvasRef().offsetWidth, canvasRef().offsetHeight);
+    const context = ctx() as CanvasRenderingContext2D;
 
-        snowflakes().forEach((snowflake) => snowflake.draw(ctx()!));
-      }
-    }
+    // Render them if the canvas is available
+    // for images
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.clearRect(0, 0, canvasRef().offsetWidth, canvasRef().offsetHeight);
+
+    snowflakes().forEach((snowflake) => snowflake.draw(context));
   };
 
   const loop = () => {
