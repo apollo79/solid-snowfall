@@ -88,7 +88,7 @@ interface SnowflakeParams {
  * An individual snowflake that will update it's location every call to `update`
  * and draw itself to the canvas every call to `draw`.
  */
-class Snowflake {
+export class Snowflake {
   static offscreenCanvases = new WeakMap<CanvasImageSource, Record<number, HTMLCanvasElement>>();
 
   private config!: SnowflakeProps;
@@ -230,5 +230,3 @@ class Snowflake {
     }
   }
 }
-
-export default Snowflake;

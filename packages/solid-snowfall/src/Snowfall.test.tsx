@@ -2,6 +2,8 @@ import { render, screen } from "@solidjs/testing-library";
 
 import { vitest } from "vitest";
 
+import "@testing-library/jest-dom"; // 👈 this is imported in order to use the jest-dom matchers
+
 import { snowfallBaseStyle } from "./config";
 import { createSnowFlakes } from "./hooks";
 import Snowfall from "./Snowfall";
@@ -11,7 +13,7 @@ vitest.mock("./hooks");
 test("renders without crashing", () => {
   render(() => <Snowfall />);
 
-  expect(screen.getByTestId("SnowfallCanvas")).toBeInTheDocument();
+  expect(screen.findByTestId("SnowfallCanvas")).toBeInTheDocument();
 });
 
 describe("Styles", () => {

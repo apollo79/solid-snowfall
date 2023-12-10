@@ -1,11 +1,9 @@
-import { Accessor, Component, createMemo, createSignal, JSX, onCleanup, onMount, splitProps } from "solid-js";
+import { Component, createMemo, createSignal, JSX, mergeProps, onCleanup, onMount, splitProps } from "solid-js";
 
-import { destructure } from "@solid-primitives/destructure";
 import { createElementSize } from "@solid-primitives/resize-observer";
 
-import { targetFrameTime } from "./config";
-import { createSnowFallStyle } from "./hooks";
-import { createDeepCompareMemo, createSnowFlakes } from "./hooks";
+import { snowfallBaseStyle, targetFrameTime } from "./config";
+import { createSnowFlakes } from "./hooks";
 import { defaultConfig, SnowflakeProps } from "./Snowflake";
 
 export interface SnowfallProps extends Partial<SnowflakeProps> {
@@ -22,31 +20,18 @@ export interface SnowfallProps extends Partial<SnowflakeProps> {
 }
 
 export const Snowfall: Component<SnowfallProps> = (props) => {
-  const [split] = splitProps(props, [
-    "color",
-    "changeFrequency",
-    "radius",
-    "speed",
-    "wind",
-    "rotationSpeed",
-    "snowflakeCount",
-    "images",
-    "style",
-  ]);
+  const [configProps, other] = splitProps(
+    props,
+    ["color", "changeFrequency", "radius", "speed", "wind", "rotationSpeed", "images"],
+    ["snowflakeCount", "style"],
+  );
 
-  const {
-    color = () => defaultConfig.color,
-    changeFrequency = () => defaultConfig.changeFrequency,
-    radius = () => defaultConfig.radius,
-    speed = () => defaultConfig.speed,
-    wind = () => defaultConfig.wind,
-    rotationSpeed = () => defaultConfig.rotationSpeed,
-    snowflakeCount = () => 150,
-    images,
-    style,
-  } = destructure(split);
+  const config = mergeProps(configProps, defaultConfig);
 
-  const mergedStyle = createSnowFallStyle(style);
+  const mergedStyle = () => ({
+    ...snowfallBaseStyle,
+    ...(other.style || {}),
+  });
 
   const [canvasRef, setCanvasRef] = createSignal<HTMLCanvasElement>(null as unknown as HTMLCanvasElement);
   const ctx = createMemo(() => canvasRef()?.getContext("2d"));
@@ -57,17 +42,7 @@ export const Snowfall: Component<SnowfallProps> = (props) => {
 
   let lastUpdate = Date.now();
 
-  const config = createDeepCompareMemo(() => ({
-    color: color(),
-    changeFrequency: changeFrequency(),
-    radius: radius(),
-    speed: speed(),
-    wind: wind(),
-    rotationSpeed: rotationSpeed(),
-    images: images?.(),
-  }));
-
-  const snowflakes = createSnowFlakes(canvasRef, snowflakeCount as Accessor<number>, config);
+  const snowflakes = createSnowFlakes(canvasRef, () => other.snowflakeCount!, config);
 
   // no need for reactivity here
   const render = (framesPassed = 1) => {

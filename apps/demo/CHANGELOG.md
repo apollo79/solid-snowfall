@@ -5,6 +5,13 @@
 ### Patch Changes
 
 - Updated dependencies
+  - solid-snowfall@0.4.0
+
+## null
+
+### Patch Changes
+
+- Updated dependencies
   - solid-snowfall@0.3.0
 
 ## null
