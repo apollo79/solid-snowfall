@@ -26,7 +26,7 @@ export const Snowfall: Component<SnowfallProps> = (props) => {
     ["snowflakeCount", "style"],
   );
 
-  const config = mergeProps(configProps, defaultConfig);
+  const config = mergeProps(defaultConfig, configProps);
 
   const mergedStyle = () => ({
     ...snowfallBaseStyle,
