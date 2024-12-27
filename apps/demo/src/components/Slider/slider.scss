@@ -1,107 +1,116 @@
 $thumb-d: 1.3em;
-$rail-h : .2em;
+$rail-h: 0.2em;
 
 .slider-wrap {
-    --dif: calc(var(--max) - var(--min));
+  --dif: calc(var(--max) - var(--min));
 
-    border-radius: .8em;
-    box-sizing   : content-box;
-    display      : inline-block;
-    position     : relative;
-    cursor       : pointer;
-    touch-action : none;
-    color        : var(--theme-color);
-    height       : $rail-h;
-    width        : 100%;
-    padding      : .8em 0px;
+  border-radius: 0.8em;
+  box-sizing: content-box;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  touch-action: none;
+  color: var(--theme-color);
+  height: $rail-h;
+  width: 100%;
+  padding: 0.8em 0px;
+
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    border-radius: inherit;
+    background-color: currentcolor;
+    opacity: 0.38;
+    width: 100%;
+    height: inherit;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &::after {
+    --left: calc((var(--smallest) - var(--min)) / var(--dif) * 100%);
+    --width: calc((var(--biggest) - var(--min)) / var(--dif) * 100% - var(--left));
+
+    content: "";
+    display: block;
+    position: absolute;
+    border-radius: inherit;
+    border: 1px solid;
+    background-color: currentcolor;
+    transition:
+      left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+      width 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+      bottom 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+      height 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    height: inherit;
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--width);
+    left: var(--left);
+  }
+
+  // remove transtion when dragging
+  &.dragging {
+    &::after,
+    .slider-thumb {
+      transition: none 0s ease 0s;
+    }
+  }
+
+  .slider-thumb {
+    position: absolute;
+    width: $thumb-d;
+    height: $thumb-d;
+    box-sizing: border-box;
+    border-radius: 50%;
+    outline: 0px;
+    background-color: currentcolor;
+    display: flex;
+    -moz-box-align: center;
+    align-items: center;
+    -moz-box-pack: center;
+    justify-content: center;
+    transition:
+      box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+      left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+      bottom 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    left: calc((var(--value) - var(--min)) / var(--dif) * 100%);
+
+    &:hover {
+      box-shadow: rgba(144, 202, 249, 0.16) 0px 0px 0px 8px;
+    }
+
+    &.active,
+    &:focus-within {
+      box-shadow: rgba(144, 202, 249, 0.16) 0px 0px 0px 14px;
+    }
 
     &::before {
-        content         : "";
-        display         : block;
-        position        : absolute;
-        border-radius   : inherit;
-        background-color: currentcolor;
-        opacity         : 0.38;
-        width           : 100%;
-        height          : inherit;
-        top             : 50%;
-        transform       : translateY(-50%);
+      position: absolute;
+      content: "";
+      border-radius: inherit;
+      width: 100%;
+      height: 100%;
+      box-shadow:
+        rgba(0, 0, 0, 0.2) 0px 3px 1px -2px,
+        rgba(0, 0, 0, 0.14) 0px 2px 2px 0px,
+        rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
     }
 
-    &::after {
-        --left : calc((var(--smallest) - var(--min)) / var(--dif) * 100%);
-        --width: calc((var(--biggest) - var(--min)) / var(--dif) * 100% - var(--left));
-
-        content         : "";
-        display         : block;
-        position        : absolute;
-        border-radius   : inherit;
-        border          : 1px solid;
-        background-color: currentcolor;
-        transition      : left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, width 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, bottom 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, height 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-        height          : inherit;
-        top             : 50%;
-        transform       : translateY(-50%);
-        width           : var(--width);
-        left            : var(--left);
+    input[type="range"] {
+      border: 0px none;
+      clip: rect(0px, 0px, 0px, 0px);
+      height: 100%;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0px;
+      position: absolute;
+      white-space: nowrap;
+      width: 100%;
+      direction: ltr;
     }
-
-    // remove transtion when dragging
-    &.dragging {
-
-        &::after,
-        .slider-thumb {
-            transition: none 0s ease 0s;
-        }
-    }
-
-    .slider-thumb {
-        position        : absolute;
-        width           : $thumb-d;
-        height          : $thumb-d;
-        box-sizing      : border-box;
-        border-radius   : 50%;
-        outline         : 0px;
-        background-color: currentcolor;
-        display         : flex;
-        -moz-box-align  : center;
-        align-items     : center;
-        -moz-box-pack   : center;
-        justify-content : center;
-        transition      : box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, left 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, bottom 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-        top             : 50%;
-        transform       : translate(-50%, -50%);
-        left            : calc((var(--value) - var(--min)) / var(--dif) * 100%);
-
-        &:hover {
-            box-shadow: rgba(144, 202, 249, 0.16) 0px 0px 0px 8px;
-        }
-
-        &.active,
-        &:focus-within {
-            box-shadow: rgba(144, 202, 249, 0.16) 0px 0px 0px 14px;
-        }
-
-        &::before {
-            position     : absolute;
-            content      : "";
-            border-radius: inherit;
-            width        : 100%;
-            height       : 100%;
-            box-shadow   : rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
-        }
-
-        input[type=range] {
-            border     : 0px none;
-            clip       : rect(0px, 0px, 0px, 0px);
-            height     : 100%;
-            margin     : -1px;
-            overflow   : hidden;
-            padding    : 0px;
-            position   : absolute;
-            white-space: nowrap;
-            width      : 100%;
-            direction  : ltr;
-        }
-    }
+  }
 }

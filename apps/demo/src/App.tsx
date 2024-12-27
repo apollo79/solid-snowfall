@@ -19,6 +19,7 @@ const images = [snowflake];
 export function App() {
   const { color, snowflakeCount, radius, speed, wind, useImages, rotationSpeed } = destructure(settingsStore);
 
+
   return (
     <div class="app">
       <Snowfall

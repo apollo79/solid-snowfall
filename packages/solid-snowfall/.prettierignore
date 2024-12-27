@@ -1,0 +1,11 @@
+.solid
+.vercel
+.github
+dist
+
+# dependencies
+/node_modules
+
+.env
+
+pnpm-lock.yaml

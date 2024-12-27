@@ -1,5 +1,11 @@
 # solid-snowfall
 
+## 0.3.2
+
+### Patch Changes
+
+- fix not using custom options
+
 ## 0.3.1
 
 ### Patch Changes
